@@ -108,7 +108,6 @@ namespace KeyboardMouseHookLibrary
 
             if (vk != Keys.None)
             {
-                //这里注册了Ctrl+Alt+E 快捷键
                 return RegisterGlobalHotKey(handle, modifiers, vk, callback);
             }
 
