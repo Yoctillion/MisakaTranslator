@@ -32,9 +32,11 @@ namespace ArtificialTransHelperLibrary
         /// </summary>
         /// <param name="source"></param>
         /// <param name="Trans"></param>
+        /// <param name="existed"></param>
         /// <returns></returns>
-        public bool AddTrans(string source,string Trans)
+        public bool AddTrans(string source,string Trans, out bool existed)
         {
+            existed = false;
             if (source == null || source == "" || Trans == null) {
                 //空条目不添加，且返回假
                 return false;
@@ -45,7 +47,9 @@ namespace ArtificialTransHelperLibrary
             
             List<List<string>> ret = sqlite.ExecuteReader(sql, 4);
 
-            if (ret.Count > 0) {
+            if (ret.Count > 0)
+            {
+                existed = true;
                 return false;
             }
 

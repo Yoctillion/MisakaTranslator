@@ -412,8 +412,8 @@ namespace MisakaTranslator_WPF
 
                                 //9.翻译原句和结果记录到数据库
                                 if (Common.appSettings.ATon) {
-                                    bool addRes = _artificialTransHelper.AddTrans(source, afterString1);
-                                    if (addRes == false)
+                                    bool addRes = _artificialTransHelper.AddTrans(source, afterString1, out bool existed);
+                                    if (!existed && !addRes)
                                     {
                                         HandyControl.Data.GrowlInfo growlInfo = new HandyControl.Data.GrowlInfo();
                                         growlInfo.Message = Application.Current.Resources["ArtificialTransAdd_Error_Hint"].ToString();
@@ -620,8 +620,8 @@ namespace MisakaTranslator_WPF
                     //9.翻译原句和结果记录到数据库
                     if (Common.appSettings.ATon)
                     {
-                        bool addRes = _artificialTransHelper.AddTrans(repairedText, afterString1);
-                        if (addRes == false)
+                        bool addRes = _artificialTransHelper.AddTrans(repairedText, afterString1, out bool existed);
+                        if (!existed && !addRes)
                         {
                             HandyControl.Data.GrowlInfo growlInfo = new HandyControl.Data.GrowlInfo();
                             growlInfo.Message = Application.Current.Resources["ArtificialTransAdd_Error_Hint"].ToString();
