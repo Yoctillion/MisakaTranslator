@@ -7,12 +7,15 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using OCRLibrary;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
+using TextBox = System.Windows.Controls.TextBox;
 
 namespace MisakaTranslator_WPF.SettingsPages
 {
@@ -51,14 +54,12 @@ namespace MisakaTranslator_WPF.SettingsPages
 
         private void OCRHotKeyBox_KeyDown(object sender, KeyEventArgs e1)
         {
+            bool isValid = true;
             System.Windows.Forms.KeyEventArgs e = ToWinforms(e1);
-            StringBuilder keyValue = new StringBuilder
-            {
-                Length = 0
-            };
-            keyValue.Append("");
+            StringBuilder keyValue = new StringBuilder();
             if (e.Modifiers != 0)
             {
+                isValid = false;
                 if (e.Control)
                     keyValue.Append("Ctrl + ");
                 if (e.Alt)
@@ -66,20 +67,48 @@ namespace MisakaTranslator_WPF.SettingsPages
                 if (e.Shift)
                     keyValue.Append("Shift + ");
             }
-            if ((e.KeyValue >= 33 && e.KeyValue <= 40)
-                || (e.KeyValue >= 65 && e.KeyValue <= 90)
-                || //a-z/A-Z
-                (e.KeyValue >= 112 && e.KeyValue <= 123)) //F1-F12
+
+            if (e.KeyCode != Keys.Escape && e.KeyCode != Keys.Back)
             {
-                keyValue.Append(e.KeyCode);
+                isValid = true;
+                if ((e.KeyValue >= 33 && e.KeyValue <= 40)
+                    || (e.KeyValue >= 65 && e.KeyValue <= 90)
+                    || //a-z/A-Z
+                    (e.KeyValue >= 112 && e.KeyValue <= 123)) //F1-F12
+                {
+                    keyValue.Append(e.KeyCode);
+                }
+                else if ((e.KeyValue >= 48 && e.KeyValue <= 57)) //0-9
+                {
+                    keyValue.Append(e.KeyCode.ToString().Substring(1));
+                }
+                else
+                {
+                    isValid = false;
+                }
             }
-            else if ((e.KeyValue >= 48 && e.KeyValue <= 57)) //0-9
-            {
-                keyValue.Append(e.KeyCode.ToString().Substring(1));
-            }
+
             ((TextBox)sender).Text = keyValue.ToString();
 
-            Common.appSettings.GlobalOCRHotkey = OCRHotKeyBox.Text;
+            if (isValid)
+            {
+                Common.appSettings.GlobalOCRHotkey = OCRHotKeyBox.Text;
+            }
+
+            e1.Handled = true;
+        }
+
+        private void OCRHotKeyBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyboardDevice.Modifiers != ModifierKeys.None)
+            {
+                OCRHotKeyBox_KeyDown(sender, e);
+            }
+            else
+            {
+                OCRHotKeyBox.Text = Common.appSettings.GlobalOCRHotkey;
+                e.Handled = true;
+            }
         }
 
         /// <summary>

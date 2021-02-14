@@ -15,7 +15,7 @@
             <hc:ComboBox Name="OCRSourceCombox" Margin="10,10,10,50" Width="380" hc:InfoElement.TitleWidth="140" hc:InfoElement.TitleAlignment="Left" hc:InfoElement.Title="{StaticResource OCRGeneralSettingsPage_OCRSource}" SelectionChanged="OCRsourceCombox_SelectionChanged" HorizontalAlignment="Left" />
 
             <TextBlock Text="{StaticResource OCRGeneralSettingsPage_Introduce_GlobalOCR}" FontSize="16" Margin="10" TextWrapping="WrapWithOverflow"/>
-            <hc:TextBox Name="OCRHotKeyBox" Margin="10" Width="380" hc:InfoElement.TitleWidth="140" hc:InfoElement.TitleAlignment="Left" hc:InfoElement.Title="{StaticResource OCRGeneralSettingsPage_GlobalOCRHotKey}"  HorizontalAlignment="Left" KeyDown="OCRHotKeyBox_KeyDown" />
+            <hc:TextBox Name="OCRHotKeyBox" Margin="10" Width="380" hc:InfoElement.TitleWidth="140" hc:InfoElement.TitleAlignment="Left" hc:InfoElement.Title="{StaticResource OCRGeneralSettingsPage_GlobalOCRHotKey}"  HorizontalAlignment="Left" PreviewKeyDown="OCRHotKeyBox_KeyDown" PreviewKeyUp="OCRHotKeyBox_KeyUp" IsReadOnly="True" />
             <hc:ComboBox Name="OCRLangCombox" Margin="10" Width="200" hc:InfoElement.TitleWidth="80" hc:InfoElement.TitleAlignment="Left" hc:InfoElement.Title="{StaticResource ChooseHandleFuncPage_OCRLangCBox}" HorizontalAlignment="Left" SelectionChanged="OCRLangCombox_SelectionChanged" />
 
         </StackPanel>

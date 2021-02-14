@@ -79,35 +79,40 @@ namespace KeyboardMouseHookLibrary
             Keys vk = Keys.None;
             foreach (string value in str.Split('+'))
             {
-                switch (value.Trim())
+                var v = value.Trim();
+                switch (v)
                 {
                     case "Ctrl":
-                        modifiers += (int)HotkeyModifiers.Control;
+                        modifiers |= (int)HotkeyModifiers.Control;
                         break;
                     case "Alt":
-                        modifiers += (int)HotkeyModifiers.Alt;
+                        modifiers |= (int)HotkeyModifiers.Alt;
                         break;
                     case "Shift":
-                        modifiers += (int)HotkeyModifiers.Shift;
+                        modifiers |= (int)HotkeyModifiers.Shift;
                         break;
                     default:
                     {
-                        if (Regex.IsMatch(value, @"[0-9]"))
+                        if (v.Length == 1 && int.TryParse(v, out _))
                         {
-                            vk = (Keys)Enum.Parse(typeof(Keys), "D" + value.Trim());
+                            Enum.TryParse("D" + v, out vk);
                         }
                         else
                         {
-                            vk = (Keys)Enum.Parse(typeof(Keys), value.Trim());
+                            Enum.TryParse(v, out vk);
                         }
                         break;
                     }
                 }
             }
 
+            if (vk != Keys.None)
+            {
+                //这里注册了Ctrl+Alt+E 快捷键
+                return RegisterGlobalHotKey(handle, modifiers, vk, callback);
+            }
 
-            //这里注册了Ctrl+Alt+E 快捷键
-            return RegisterGlobalHotKey(handle, modifiers, vk, callback);
+            return false;
         }
 
     }
