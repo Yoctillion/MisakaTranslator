@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,6 +10,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using Config.Net;
 using HandyControl.Controls;
+using HandyControl.Data;
 using KeyboardMouseHookLibrary;
 using OCRLibrary;
 using SQLHelperLibrary;
@@ -354,13 +356,27 @@ namespace MisakaTranslator_WPF
 
         private async void LEStartBtn_Click(object sender, RoutedEventArgs e)
         {
-            var filepath = gameInfoList[gid].FilePath;
-            var p = new ProcessStartInfo();
             var lePath = Common.appSettings.LEPath;
-            p.FileName = lePath + "\\LEProc.exe";
-            p.Arguments = $@"-run {filepath}";
-            p.UseShellExecute = false;
-            p.WorkingDirectory = lePath;
+            var leExec = Path.Combine(lePath, "LEProc.exe");
+            if (!File.Exists(leExec))
+            {
+                var info = new GrowlInfo
+                {
+                    Message = Application.Current.Resources["MainWindow_LEError_Hint"].ToString(),
+                    WaitTime = 2,
+                };
+                Growl.ErrorGlobal(info);
+                return;
+            }
+
+            // LEProc <exePath> -run <cfgPath>
+            var filepath = gameInfoList[gid].FilePath;
+            var p = new ProcessStartInfo
+            {
+                FileName = leExec,
+                Arguments = filepath.Contains("\"") ? filepath : $"\"{filepath}\"",
+                UseShellExecute = false,
+            };
             var res = Process.Start(p);
             res?.WaitForInputIdle(5000);
             GameInfoDrawer.IsOpen = false;
